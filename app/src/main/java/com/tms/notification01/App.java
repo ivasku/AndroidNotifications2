@@ -10,6 +10,8 @@ public class App extends Application {
     public static final String CHANNEL_1_ID = "channel1";
     public static final String CHANNEL_2_ID = "channel2";
     public static final String CHANNEL_3_ID = "channel3";
+    public static final String CHANNEL_4_ID = "channel4";
+    public static final String CHANNEL_5_ID = "channel5";
 
     @Override
     public void onCreate() {
@@ -44,10 +46,26 @@ public class App extends Application {
             );
             channe3.setDescription("This is channel 3");
 
+            NotificationChannel channe4 = new NotificationChannel(
+                    CHANNEL_4_ID,
+                    "Channel 4",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channe3.setDescription("This is channel 4");
+
+            NotificationChannel channe5 = new NotificationChannel(
+                    CHANNEL_5_ID,
+                    "Channel 5",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channe3.setDescription("This is channel 5");
+
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
             manager.createNotificationChannel(channe2);
             manager.createNotificationChannel(channe3);
+            manager.createNotificationChannel(channe4);
+            manager.createNotificationChannel(channe5);
         }
     }
 }
