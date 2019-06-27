@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 
 import static com.tms.notification01.App.CHANNEL_1_ID;
 import static com.tms.notification01.App.CHANNEL_2_ID;
+import static com.tms.notification01.App.CHANNEL_3_ID;
 
 public class MainActivity extends AppCompatActivity {
     private NotificationManagerCompat notificationManagerCompat;
@@ -59,14 +62,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendOnChannel2 (View view) {
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.photo);
+
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_2_ID)
                 .setSmallIcon(R.drawable.ic_two)
                 .setContentTitle(editTextTitle.getText().toString())
                 .setContentText(editTextMessage.getText().toString())
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setLargeIcon(largeIcon)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(getString(R.string.dummy))
+                    .setBigContentTitle("Big content title")
+                    .setSummaryText("Summary text"))
                 .build();
 
         notificationManagerCompat.notify(2, notification);
+    }
+
+    public void sendOnChannel3 (View view) {
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_3_ID)
+                .setSmallIcon(R.drawable.ic_two)
+                .setContentTitle(editTextTitle.getText().toString())
+                .setContentText(editTextMessage.getText().toString())
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(new NotificationCompat.InboxStyle()
+                    .addLine("this is line 1")
+                    .addLine("this is line 2")
+                    .addLine("this is line 3")
+                    .addLine("this is line 4")
+                    .addLine("this is line 5")
+                    .addLine("this is line 6")
+                    .addLine("this is line 7")
+                    .setBigContentTitle("Big content title")
+                    .setSummaryText("summary text"))
+                .build();
+
+        notificationManagerCompat.notify(3, notification);
     }
 
 }
