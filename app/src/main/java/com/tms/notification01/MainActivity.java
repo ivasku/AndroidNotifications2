@@ -3,16 +3,20 @@ package com.tms.notification01;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import java.util.ArrayList;
 
 import static com.tms.notification01.App.CHANNEL_1_ID;
 import static com.tms.notification01.App.CHANNEL_2_ID;
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextTitle;
     private EditText editTextMessage;
 
+    static ArrayList<Message> Messages = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextMessage = findViewById(R.id.editTextMessage);
+
+        Messages.add(new Message("Good Morning!" , "Pero"));
+        Messages.add(new Message("I am hungry!" , null));
+        Messages.add(new Message("Hello!" , "Pero"));
     }
 
 
@@ -143,6 +153,56 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         notificationManagerCompat.notify(4, notification);
+    }
+
+    public void sendOnChannel6 (View view) {
+        sendOnChannel6Notification(this);
+    }
+
+    public static void sendOnChannel6Notification (Context context) {
+
+
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context,
+                0, activityIntent, 0);
+
+        RemoteInput remoteInput = new RemoteInput.Builder("key_text_reply")
+                .setLabel("Your answer...")
+                .build();
+
+        Intent replyIntent = new Intent (context, NotificationReceiver.class);
+        PendingIntent replyPendingIntent = PendingIntent.getBroadcast(context, 0, replyIntent, 0);
+
+        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_v2,
+                "Reply",
+                replyPendingIntent
+        ).addRemoteInput(remoteInput).build();
+
+        NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("Me");
+        messagingStyle.setConversationTitle("Group Chaet");
+
+
+        for (Message chatMessage : Messages) {
+            NotificationCompat.MessagingStyle.Message notificationMessage = new NotificationCompat.MessagingStyle.Message(
+                    chatMessage.getText(), chatMessage.getTimeStamp(), chatMessage.getSender()
+            );
+            messagingStyle.addMessage(notificationMessage);
+        }
+
+        Notification notification = new NotificationCompat.Builder(context, CHANNEL_5_ID)
+                .setSmallIcon(R.drawable.ic_two)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setAutoCancel(true)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(contentIntent)
+                .setStyle(messagingStyle)
+                .setColor(Color.GREEN)
+                .addAction(replyAction)
+                .build();
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(5, notification);
     }
 
 }
